@@ -82,11 +82,12 @@ function updateChart() {
     const data = groupedData.map(entry => entry.duration);
     const stages = groupedData.map(entry => entry.stage);
 
-    // If the chart instance already exists, we destroy it first to re-render
+    // If the chart instance already exists, destroy it to prevent duplication
     if (chartInstance) {
         chartInstance.destroy();
     }
 
+    // Create a new chart instance
     chartInstance = new Chart(chartElement, {
         type: 'bar',
         data: {
@@ -136,11 +137,12 @@ function showChart(type) {
             break;
     }
 
-    // If the chart instance already exists, we destroy it first to re-render
+    // If the chart instance already exists, destroy it to prevent duplication
     if (chartInstance) {
         chartInstance.destroy();
     }
 
+    // Create a new chart instance
     chartInstance = new Chart(chartElement, {
         type: 'line',
         data: { labels, datasets: [{ label, data, borderColor: 'rgba(75, 192, 192, 1)', tension: 0.1 }] },
@@ -153,15 +155,40 @@ function showChart(type) {
     });
 }
 
-// Initialize buttons to work independently
+// Initialize event listeners for buttons
 document.addEventListener("DOMContentLoaded", () => {
-    // Initialize WiFi fetch on page load
+    // Fetch new data on page load
     fetchDataOverWiFi();
 
     // Add event listeners for buttons
     const fetchButton = document.getElementById('fetchDataButton');
     const uploadButton = document.getElementById('uploadDataButton');
-    
-    fetchButton.addEventListener('click', fetchDataOverWiFi);
-    uploadButton.addEventListener('click', uploadData);
+    const hrButton = document.getElementById('hrButton');
+    const tempButton = document.getElementById('tempButton');
+    const spo2Button = document.getElementById('spo2Button');
+
+    // Fetch data button click
+    fetchButton.addEventListener('click', () => {
+        fetchDataOverWiFi();
+    });
+
+    // Upload file button click
+    uploadButton.addEventListener('click', () => {
+        uploadData();
+    });
+
+    // Show heart rate chart
+    hrButton.addEventListener('click', () => {
+        showChart('hr');
+    });
+
+    // Show temperature chart
+    tempButton.addEventListener('click', () => {
+        showChart('temp');
+    });
+
+    // Show SpO2 chart
+    spo2Button.addEventListener('click', () => {
+        showChart('spo2');
+    });
 });

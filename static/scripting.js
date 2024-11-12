@@ -53,6 +53,7 @@ function determineSleepStage(hr, spo2, temp) {
     if (hr <= HR_DEEP) return "Deep Sleep";
     if (HR_REM <= hr < HR_AWAKE) return "REM Sleep";
     return "Unknown";
+    alert("its it")
 }
 
 // Process raw data, determine sleep stages, and group them

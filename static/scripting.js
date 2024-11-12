@@ -1,11 +1,11 @@
 // Initialize variables for chart, data, and grouped data
 let rawData = [];
 let groupedData = [];
-let currentChart = null; // To keep track of the current chart
 
 // Function to simulate data retrieval over WiFi
 function fetchDataOverWiFi() {
-    // Replace with actual WiFi data retrieval
+    // Replace this with your WiFi data retrieval logic
+    // For demo, let's assume data is fetched as JSON
     fetch("path_to_your_data_endpoint")
         .then(response => response.json())
         .then(data => {
@@ -76,13 +76,12 @@ function processData(data) {
 
 // Display overview with grouped sleep stages
 function overview() {
-    if (currentChart) currentChart.destroy(); // Clear previous chart if it exists
     const chartElement = document.getElementById("myChart").getContext("2d");
     const labels = groupedData.map(entry => entry.start);
     const data = groupedData.map(entry => entry.duration);
     const stages = groupedData.map(entry => entry.stage);
 
-    currentChart = new Chart(chartElement, {
+    new Chart(chartElement, {
         type: 'bar',
         data: {
             labels,
@@ -104,4 +103,44 @@ function overview() {
             scales: {
                 y: { beginAtZero: true, title: { display: true, text: 'Duration (min)' } }
             },
-            plugins: { legend: {
+            plugins: { legend: { display: false } }
+        }
+    });
+}
+
+// Display individual charts for Temp, SpO2, and HR
+function showChart(type) {
+    const chartElement = document.getElementById("myChart").getContext("2d");
+    const labels = rawData.map(entry => entry.time);
+    let data = [];
+    let label = '';
+
+    switch (type) {
+        case 'temp':
+            data = rawData.map(entry => entry.temp);
+            label = 'Temperature (°C)';
+            break;
+        case 'spo2':
+            data = rawData.map(entry => entry.spo2);
+            label = 'SpO2 (%)';
+            break;
+        case 'hr':
+            data = rawData.map(entry => entry.hr);
+            label = 'Heart Rate (bpm)';
+            break;
+    }
+
+    new Chart(chartElement, {
+        type: 'line',
+        data: { labels, datasets: [{ label, data, borderColor: 'rgba(75, 192, 192, 1)', tension: 0.1 }] },
+        options: {
+            scales: {
+                y: { beginAtZero: true, title: { display: true, text: label } },
+                x: { title: { display: true, text: 'Time' } }
+            }
+        }
+    });
+}
+
+// Initialize WiFi fetch on page load
+document.addEventListener("DOMContentLoaded", fetchDataOverWiFi);

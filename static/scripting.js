@@ -49,11 +49,10 @@ function determineSleepStage(hr, spo2, temp) {
     const SPO2_NORMAL = 95, TEMP_AWAKE = 36.6, TEMP_SLEEP = 36.0;
 
     if (hr >= HR_AWAKE) return "Awake";
-    if (HR_LIGHT < hr < HR_AWAKE) return "Light Sleep";
+    if (HR_LIGHT < hr && hr < HR_AWAKE) return "Light Sleep";
     if (hr <= HR_DEEP) return "Deep Sleep";
-    if (HR_REM <= hr < HR_AWAKE) return "REM Sleep";
+    if (HR_REM <= hr && hr < HR_AWAKE) return "REM Sleep";
     return "Unknown";
-    alert("its it");
 }
 
 // Process raw data, determine sleep stages, and group them
@@ -143,5 +142,15 @@ function showChart(type) {
     });
 }
 
-// Initialize WiFi fetch on page load
-document.addEventListener("DOMContentLoaded", fetchDataOverWiFi);
+// Initialize buttons to work independently
+document.addEventListener("DOMContentLoaded", () => {
+    // Initialize WiFi fetch on page load
+    fetchDataOverWiFi();
+
+    // Add event listeners for buttons
+    const fetchButton = document.getElementById('fetchDataButton');
+    const uploadButton = document.getElementById('uploadDataButton');
+    
+    fetchButton.addEventListener('click', fetchDataOverWiFi);
+    uploadButton.addEventListener('click', uploadData);
+});

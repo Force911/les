@@ -48,10 +48,10 @@ function determineSleepStage(hr, spo2, temp) {
     const HR_AWAKE = 70, HR_LIGHT = 50, HR_DEEP = 40, HR_REM = 60;
     const SPO2_NORMAL = 95, TEMP_AWAKE = 36.6, TEMP_SLEEP = 36.0;
 
-    if (hr >= HR_AWAKE && spo2 >= SPO2_NORMAL && temp >= TEMP_AWAKE) return "Awake";
-    if (HR_LIGHT < hr < HR_AWAKE && spo2 >= SPO2_NORMAL && TEMP_SLEEP <= temp < TEMP_AWAKE) return "Light Sleep";
-    if (hr <= HR_DEEP && spo2 >= SPO2_NORMAL && temp <= TEMP_SLEEP) return "Deep Sleep";
-    if (HR_REM <= hr < HR_AWAKE && spo2 >= SPO2_NORMAL && temp >= TEMP_SLEEP) return "REM Sleep";
+    if (hr >= HR_AWAKE) return "Awake";
+    if (HR_LIGHT < hr < HR_AWAKE) return "Light Sleep";
+    if (hr <= HR_DEEP) return "Deep Sleep";
+    if (HR_REM <= hr < HR_AWAKE) return "REM Sleep";
     return "Unknown";
 }
 

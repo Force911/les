@@ -1,6 +1,7 @@
 // Initialize variables for chart, data, and grouped data
 let rawData = [];
 let groupedData = [];
+let chartInstance = null; // Store the chart instance globally
 
 // Function to simulate data retrieval over WiFi
 function fetchDataOverWiFi() {
@@ -11,7 +12,7 @@ function fetchDataOverWiFi() {
         .then(data => {
             rawData = data;
             processData(rawData);
-            overview();
+            updateChart();  // Update the chart after data fetch
         })
         .catch(error => console.error('Error fetching data:', error));
 }
@@ -27,7 +28,7 @@ function uploadData() {
         reader.onload = e => {
             rawData = parseTxtData(e.target.result);
             processData(rawData);
-            overview();
+            updateChart();  // Update the chart after file upload
         };
         reader.readAsText(file);
     };
@@ -74,14 +75,19 @@ function processData(data) {
     if (groupedStage.stage) groupedData.push(groupedStage);
 }
 
-// Display overview with grouped sleep stages
-function overview() {
+// Update the chart with new data
+function updateChart() {
     const chartElement = document.getElementById("myChart").getContext("2d");
     const labels = groupedData.map(entry => entry.start);
     const data = groupedData.map(entry => entry.duration);
     const stages = groupedData.map(entry => entry.stage);
 
-    new Chart(chartElement, {
+    // If the chart instance already exists, we destroy it first to re-render
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
+
+    chartInstance = new Chart(chartElement, {
         type: 'bar',
         data: {
             labels,
@@ -130,7 +136,12 @@ function showChart(type) {
             break;
     }
 
-    new Chart(chartElement, {
+    // If the chart instance already exists, we destroy it first to re-render
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
+
+    chartInstance = new Chart(chartElement, {
         type: 'line',
         data: { labels, datasets: [{ label, data, borderColor: 'rgba(75, 192, 192, 1)', tension: 0.1 }] },
         options: {
